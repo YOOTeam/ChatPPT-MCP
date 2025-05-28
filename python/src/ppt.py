@@ -13,20 +13,20 @@ mcp = FastMCP("Chatppt Server", log_level="ERROR")
 # Chatppt API Base URL
 API_BASE = "https://saas.api.yoo-ai.com"
 # 用户API Key
-API_KEY = os.getenv('API_KEY')
+API_KEY = os.getenv('API_PPT_KEY')
 
 
 def check_api_key():
-    """检查 API_KEY 是否已设置"""
+    """检查 API_PPT_KEY 是否已设置"""
     if not API_KEY:
-        raise ValueError("API_KEY 环境变量未设置")
+        raise ValueError("API_PPT_KEY 环境变量未设置")
     return API_KEY
 
 
 @mcp.tool()
 async def check():
     """查询用户当前配置token"""
-    return os.getenv('API_KEY')
+    return os.getenv('API_PPT_KEY')
 
 
 # 注册工具的装饰器，可以很方便的把一个函数注册为工具

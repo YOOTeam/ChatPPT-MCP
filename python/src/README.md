@@ -64,7 +64,7 @@ uv run --with mcp\[cli\] mcp run {YOUR_PATH}/mcp_server/ppt.py
         "{YOUR_PATH}/mcp_server/ppt.py"
       ],
       "env": {
-        "API_KEY": "<YOUR_YOO_API_KEY>"
+        "API_PPT_KEY": "<YOUR_YOO_API_KEY>"
       }
     }
   }
