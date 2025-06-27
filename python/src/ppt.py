@@ -13,14 +13,14 @@ mcp = FastMCP("Chatppt Server", log_level="ERROR")
 # Chatppt API Base URL
 API_BASE = "https://saas.api.yoo-ai.com"
 # 用户API Key
-API_KEY = os.getenv('API_PPT_KEY')
+API_PPT_KEY = os.getenv('API_PPT_KEY')
 
 
 def check_api_key():
     """检查 API_PPT_KEY 是否已设置"""
-    if not API_KEY:
+    if not API_PPT_KEY:
         raise ValueError("API_PPT_KEY 环境变量未设置")
-    return API_KEY
+    return API_PPT_KEY
 
 
 @mcp.tool()
