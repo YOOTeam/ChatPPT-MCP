@@ -267,7 +267,7 @@ async def ppt_replace_template(ppt_id: str = Field(description="PPT-ID")) -> str
     Name:
         更改替换为PPT模板。
     Description:
-        根据任务PPT-ID执行随机替换PPT模板，并返回新的任务PPT-ID。
+        根据任务PPT-ID执行随机替换PPT模板，并返回新的任务PPT-ID，可以调用query_ppt工具查询生成进度和预览URL
     Args:
         ppt_id: PPT-ID
     Returns:
@@ -304,7 +304,7 @@ async def ppt_set_color(
     Name:
         更改设置PPT主题色。
     Description:
-        根据PPT-ID执行设置更换主题色，可以参照用给定的颜色空间名、或者颜色值等，进行设置PPT主题色，并返回新的PPT-ID。
+        根据PPT-ID执行设置更换主题色，可以参照用给定的颜色空间名、或者颜色值等，进行设置PPT主题色，并返回新的PPT-ID，可以调用query_ppt工具查询生成进度和预览URL
     Args:
         ppt_id(str): PPT-ID
         color(str)：PPT-color,设置的主题色，可以支持颜色空间名称如"紫色","红色","橙色","黄色","绿色","青色","蓝色","粉色",也可以支持#xxxxxh或者RGB颜色值。
@@ -342,7 +342,7 @@ async def ppt_set_font_name(
     Name:
         设置更改字体。
     Description:
-        根据PPT-ID执行设置PPT字体，参照给定的字体名称，如黑体、宋体、仿宋、幼圆、楷体、隶书等进行设置，，并返回新的PPT-ID。
+        根据PPT-ID执行设置PPT字体，参照给定的字体名称，如黑体、宋体、仿宋、幼圆、楷体、隶书等进行设置，，并返回新的PPT-ID，可以调用query_ppt工具查询生成进度和预览URL
     Args:
         ppt_id(str): PPT-ID
         font_name(str)：字体名，如黑体、宋体、仿宋、幼圆、楷体、隶书
@@ -413,7 +413,7 @@ async def ppt_create_note(ppt_id: str = Field(description="PPT-ID")) -> str:
     Name:
         生成演讲稿。
     Description:
-        参照给出的任务PPT-ID自动为用户的ppt生成全文演讲稿，并会返回新的PPT-ID。
+        参照给出的任务PPT-ID自动为用户的ppt生成全文演讲稿，并会返回新的PPT-ID，可以调用query_ppt工具查询生成进度和预览URL
     Args:
         ppt_id: PPT-ID
     Returns:
@@ -449,7 +449,7 @@ async def ppt_add_slides(ppt_id: str = Field(description="PPT-ID"),
     Name:
         给生成后的PPT，插入或者新增单页幻灯片。
     Description:
-        参照给出的任务PPT-ID，给对应的文档新增或插入新的PPT页面，可以指定对应的页面类型，返回新的PPT-ID。
+        参照给出的任务PPT-ID，给对应的文档新增或插入新的PPT页面，可以指定对应的页面类型，返回新的PPT-ID，可以调用query_ppt工具查询生成进度和预览URL
     Args:
         ppt_id: PPT-ID，必须参数。
         slide_text(str): slide_text，用户指定插入页数，必须参数。
@@ -570,7 +570,7 @@ async def ppt_replace_user_select_template(
     Name:
         更改替换为用户指定模板。
     Description:
-        根据任务PPT-ID执行替换为用户指定（根据cover_id）的模板，并返回新的任务PPT-ID。
+        根据任务PPT-ID执行替换为用户指定（根据cover_id）的模板，并返回新的任务PPT-ID，可以调用query_ppt工具查询生成进度和预览URL
     Args:
         ppt_id(str): PPT-ID
         cover_id(str)：cover_id，用户指定的模板id，需要通过ppt_create_template_coverImage 进行生成。
