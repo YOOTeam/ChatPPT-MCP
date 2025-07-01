@@ -45,17 +45,27 @@ interface PptQueryResponse extends ChatpptResponse {
     }
 }
 
-
 interface PptDownloadResponse extends ChatpptResponse {
     data: {
         download_url: string,
     }
 }
 
-
 interface EditorPptResponse extends ChatpptResponse {
     data: {
         url: string,
+    }
+}
+
+interface TaskResponse extends ChatpptResponse {
+    data: {
+        id: string
+    }
+}
+
+interface DatabaseResponse extends ChatpptResponse {
+    data: {
+        data: string
     }
 }
 
@@ -122,6 +132,163 @@ const EDITOR_PPT_TOOL: Tool = {
     }
 };
 
+const REPLACE_PPT_TOOL: Tool = {
+    name: "replace_ppt",
+    description: "根据任务PPT-ID执行随机替换PPT模板，并返回新的任务PPT-ID。",
+    inputSchema: {
+        type: "object",
+        properties: {
+            ppt_id: {
+                type: "string",
+                description: "PPT-ID"
+            }
+        },
+        required: ["id"]
+    }
+}
+
+const SET_FONT_PPT_TOOL: Tool = {
+    name: "set_font_ppt",
+    description: "根据PPT-ID执行设置PPT字体，参照给定的字体名称，如黑体、宋体、仿宋、幼圆、楷体、隶书等进行设置，，并返回新的PPT-ID。",
+    inputSchema: {
+        type: "object",
+        properties: {
+            ppt_id: {
+                type: "string",
+                description: "PPT-ID"
+            },
+            font_name: {
+                type: "string",
+                description: "字体名，如黑体、宋体、仿宋、幼圆、楷体、隶书"
+            }
+        },
+        required: ["id"]
+    }
+}
+
+const SET_ANIM_PPT_TOOL: Tool = {
+    name: "set_anim_ppt",
+    description: "根据PPT-ID执行设置动画,可以支持参照给出的任务PPT-ID设置或者取消用户PPT的动画效果。",
+    inputSchema: {
+        type: "object",
+        properties: {
+            ppt_id: {
+                type: "string",
+                description: "PPT-ID"
+            },
+            set_anim: {
+                type: "string",
+                default: "1",
+                description: "设置动画还是取消动画"
+            }
+        },
+        required: ["id"]
+    }
+}
+
+const CREATE_NOTE_PPT_TOOL: Tool = {
+    name: "create_note_ppt",
+    description: "参照给出的任务PPT-ID自动为用户的ppt生成全文演讲稿，并会返回新的PPT-ID。",
+    inputSchema: {
+        type: "object",
+        properties: {
+            ppt_id: {
+                type: "string",
+                description: "PPT-ID"
+            }
+        },
+        required: ["id"]
+    }
+}
+
+const ADD_SLIDES_PPT_TOOL: Tool = {
+    name: "add_slides_ppt",
+    description: "参照给出的任务PPT-ID，给对应的文档新增或插入新的PPT页面，可以指定对应的页面类型，返回新的PPT-ID。",
+    inputSchema: {
+        type: "object",
+        properties: {
+            ppt_id: {
+                type: "string",
+                description: "PPT-ID",
+                required: true
+            },
+            slide_text: {
+                type: "string",
+                description: "slide_text，用户指定插入页数",
+                required: true
+            },
+            slide_type: {
+                type: "string",
+                description: "slide_type，指定生成页面类型，可以是“封面页，目录页，章节页，内容页，致谢页”，默认为内容页。",
+                default: "内容页"
+            }
+        },
+        required: ["id"]
+    }
+}
+
+const CREATE_OUTLINE_PPT_TOOL: Tool = {
+    name: "create_outline_ppt",
+    description: "根据用户输入的内容ppt_text，实时生成大纲内容，直接返回大纲文本内容。",
+    inputSchema: {
+        type: "object",
+        properties: {
+            ppt_text: {
+                type: "string",
+                description: "根据用户输入的内容ppt_text，实时生成大纲内容，直接返回大纲文本内容。",
+                required: true
+            }
+        },
+        required: ["ppt_text"]
+    }
+}
+
+const CREATE_TEMPLATE_COVER_TOOL: Tool = {
+    name: "create_template_cover_ppt",
+    description: "根据用户输入的内容ppt_text，实时生成与渲染对应的模板，返回对应的模板ID和对应的渲染图片，支持用户指定颜色ppt_color和风格ppt_style，默认随机；也可以指定返回的数量，默认为4个。\n",
+    inputSchema: {
+        type: "object",
+        properties: {
+            ppt_text: {
+                type: "string",
+                description: "根据用户输入的内容ppt_text，实时生成大纲内容，直接返回大纲文本内容。",
+            },
+            ppt_color: {
+                type: "string",
+                description: "Template-color，指定生成的模板风格，可以为空，表示随机；也可以从\"科技风\",\"商务风\",\"小清新\",\"极简风\",\"中国风\",\"可爱卡通\"进行执行，可选参数。"
+            },
+            ppt_style: {
+                type: "string",
+                description: "Template-style,指定生成模板的颜色，可以为空，表示随机；也可以从\"紫色\",\"红色\",\"橙色\",\"黄色\",\"绿色\",\"青色\",\"蓝色\",\"粉色\",\"灰色\"进行指定，可选参数。"
+            },
+            ppt_num: {
+                type: "int",
+                description: "Template-num，指定生成模板数量，默认为4",
+                default: 4
+            }
+        },
+        required: ["ppt_text"]
+    }
+}
+
+const REPLACE_TEMPLATE_COVER_TOOL: Tool = {
+    name: "replace_template_cover_ppt",
+    description: "根据任务PPT-ID执行替换为用户指定（根据cover_id）的模板，并返回新的任务PPT-ID。",
+    inputSchema: {
+        type: "object",
+        properties: {
+            ppt_id: {
+                type: "string",
+                description: "PPT-ID",
+            },
+            cover_id: {
+                type: "string",
+                description: "cover_id，用户指定的模板id，需要通过ppt_create_template_coverImage 进行生成。"
+            }
+        },
+        required: ["ppt_id", "cover_id"]
+    }
+}
 
 // 生成ppt
 async function handlePptBuild(text: string) {
@@ -274,6 +441,311 @@ async function handleEditorPpt(id: string) {
     };
 }
 
+
+// 替换/更换模板
+async function handleReplacePpt(id: string) {
+    const url = new URL(API_URL + "/mcp/ppt/ppt-create-task");
+    let params = JSON.stringify({
+        "id": id,
+    })
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": API_KEY
+        },
+        body: params,
+    });
+    const data = await response.json() as TaskResponse;
+    if (data.code !== 200) {
+        return {
+            content: [{
+                type: "text",
+                text: `BuildPpt failed: ${data.code} : ${data.msg}`,
+            }],
+            isError: true
+        };
+    }
+
+    return {
+        content: [{
+            type: "text",
+            text: JSON.stringify({
+                id: data.data.id,
+            }, null, 2)
+        }],
+        isError: false
+    };
+}
+
+
+// 替换字体
+async function handleSetFontPpt(id: string, font_name: string) {
+    const url = new URL(API_URL + "/mcp/ppt/ppt-create-task");
+    let params = JSON.stringify({
+        "id": id,
+        "font_name": font_name
+    })
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": API_KEY
+        },
+        body: params,
+    });
+    const data = await response.json() as TaskResponse;
+    if (data.code !== 200) {
+        return {
+            content: [{
+                type: "text",
+                text: `BuildPpt failed: ${data.code} : ${data.msg}`,
+            }],
+            isError: true
+        };
+    }
+
+    return {
+        content: [{
+            type: "text",
+            text: JSON.stringify({
+                id: data.data.id,
+            }, null, 2)
+        }],
+        isError: false
+    };
+}
+
+
+// 生成动画
+async function handleSetAnimPpt(id: string, set_anim: string) {
+    const url = new URL(API_URL + "/mcp/ppt/ppt-create-task");
+    let params = JSON.stringify({
+        "id": id,
+        "set_anim": set_anim
+    })
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": API_KEY
+        },
+        body: params,
+    });
+    const data = await response.json() as TaskResponse;
+    if (data.code !== 200) {
+        return {
+            content: [{
+                type: "text",
+                text: `BuildPpt failed: ${data.code} : ${data.msg}`,
+            }],
+            isError: true
+        };
+    }
+
+    return {
+        content: [{
+            type: "text",
+            text: JSON.stringify({
+                id: data.data.id,
+            }, null, 2)
+        }],
+        isError: false
+    };
+}
+
+
+// 生成演讲稿
+async function handleCreateNotePpt(id: string) {
+    const url = new URL(API_URL + "/mcp/ppt/ppt-create-task");
+    let params = JSON.stringify({
+        "id": id,
+        "note": "1"
+    })
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": API_KEY
+        },
+        body: params,
+    });
+    const data = await response.json() as TaskResponse;
+    if (data.code !== 200) {
+        return {
+            content: [{
+                type: "text",
+                text: `BuildPpt failed: ${data.code} : ${data.msg}`,
+            }],
+            isError: true
+        };
+    }
+
+    return {
+        content: [{
+            type: "text",
+            text: JSON.stringify({
+                id: data.data.id,
+            }, null, 2)
+        }],
+        isError: false
+    };
+}
+
+// 新增页面
+async function handleAddSlidesPPT(id: string, slide_text: string, slide_type: string) {
+    const url = new URL(API_URL + "/mcp/ppt/ppt-page");
+    let params = JSON.stringify({
+        "id": id,
+        "slide_text": slide_text,
+        "slide_type": slide_type
+    })
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": API_KEY
+        },
+        body: params,
+    });
+    const data = await response.json() as TaskResponse;
+    if (data.code !== 200) {
+        return {
+            content: [{
+                type: "text",
+                text: `BuildPpt failed: ${data.code} : ${data.msg}`,
+            }],
+            isError: true
+        };
+    }
+
+    return {
+        content: [{
+            type: "text",
+            text: JSON.stringify({
+                id: data.data.id,
+            }, null, 2)
+        }],
+        isError: false
+    };
+}
+
+
+// 生成大纲
+async function handleCreateOutLinePPT(ppt_text: string) {
+    const url = new URL(API_URL + "/mcp/ppt/ppt-structure");
+    let params = JSON.stringify({
+        "text": ppt_text,
+    })
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": API_KEY
+        },
+        body: params,
+    });
+    const data = await response.json() as DatabaseResponse;
+    if (data.code !== 200) {
+        return {
+            content: [{
+                type: "text",
+                text: `BuildPpt failed: ${data.code} : ${data.msg}`,
+            }],
+            isError: true
+        };
+    }
+
+    return {
+        content: [{
+            type: "text",
+            text: JSON.stringify({
+                id: data.data,
+            }, null, 2)
+        }],
+        isError: false
+    };
+}
+
+
+// 生成封面图
+async function handleCreateTemplateCover(ppt_text: string, ppt_color: string, ppt_style: string, ppt_num: number) {
+    const url = new URL(API_URL + "/mcp/ppt/ppt-cover");
+    let params = JSON.stringify({
+        "title": ppt_text,
+        "count": ppt_num,
+        "color": ppt_color,
+        "style": ppt_style
+    })
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": API_KEY
+        },
+        body: params,
+    });
+    const data = await response.json() as DatabaseResponse;
+    if (data.code !== 200) {
+        return {
+            content: [{
+                type: "text",
+                text: `BuildPpt failed: ${data.code} : ${data.msg}`,
+            }],
+            isError: true
+        };
+    }
+
+    return {
+        content: [{
+            type: "text",
+            text: JSON.stringify({
+                id: data.data,
+            }, null, 2)
+        }],
+        isError: false
+    };
+}
+
+
+// 替换指定模板
+async function handleReplaceTemplateCover(ppt_id: string, cover_id: string) {
+    const url = new URL(API_URL + "/mcp/ppt/ppt-create-task");
+    let params = JSON.stringify({
+        "ppt_id": ppt_id,
+        "cover_id": cover_id
+    })
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": API_KEY
+        },
+        body: params,
+    });
+    const data = await response.json() as DatabaseResponse;
+    if (data.code !== 200) {
+        return {
+            content: [{
+                type: "text",
+                text: `BuildPpt failed: ${data.code} : ${data.msg}`,
+            }],
+            isError: true
+        };
+    }
+
+    return {
+        content: [{
+            type: "text",
+            text: JSON.stringify({
+                id: data.data,
+            }, null, 2)
+        }],
+        isError: false
+    };
+}
+
+
 // Create an MCP server
 const server = new Server(
     {
@@ -291,7 +763,15 @@ const MAPS_TOOLS = [
     BUILD_TOOL,
     QUERY_TOOL,
     DOWNLOAD_PPT_TOOL,
-    EDITOR_PPT_TOOL
+    EDITOR_PPT_TOOL,
+    REPLACE_PPT_TOOL,
+    SET_FONT_PPT_TOOL,
+    SET_ANIM_PPT_TOOL,
+    CREATE_NOTE_PPT_TOOL,
+    ADD_SLIDES_PPT_TOOL,
+    CREATE_OUTLINE_PPT_TOOL,
+    CREATE_TEMPLATE_COVER_TOOL,
+    REPLACE_TEMPLATE_COVER_TOOL
 ] as const;
 
 // Set up request handlers
@@ -321,6 +801,58 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 const {id} = request.params.arguments as { id: string };
                 return await handleEditorPpt(id);
             }
+
+            case "replace_ppt": {
+                const {id} = request.params.arguments as { id: string };
+                return await handleReplacePpt(id);
+            }
+
+            case "set_font_ppt": {
+                const {id, font_name} = request.params.arguments as { id: string, font_name: string };
+                return await handleSetFontPpt(id, font_name)
+            }
+
+            case "set_anim_ppt": {
+                const {id, set_anim} = request.params.arguments as { id: string, set_anim: string };
+                return await handleSetAnimPpt(id, set_anim)
+            }
+
+            case "create_note_ppt": {
+                const {id} = request.params.arguments as { id: string };
+                return await handleCreateNotePpt(id)
+            }
+
+            case "add_slides_ppt": {
+                const {id, slide_text, slide_type} = request.params.arguments as {
+                    id: string,
+                    slide_type: string,
+                    slide_text: string
+                };
+                return await handleAddSlidesPPT(id, slide_text, slide_type)
+            }
+
+            case "create_outline_ppt": {
+                const {ppt_text} = request.params.arguments as { ppt_text: string };
+                return await handleCreateOutLinePPT(ppt_text)
+            }
+
+
+            case "create_template_cover_ppt": {
+                const {ppt_text, ppt_num, ppt_style, ppt_color} = request.params.arguments as {
+                    ppt_text: string,
+                    ppt_num: number,
+                    ppt_style: string,
+                    ppt_color: string
+                };
+                return await handleCreateTemplateCover(ppt_text, ppt_color, ppt_style, ppt_num)
+            }
+
+
+            case "replace_template_cover_ppt": {
+                const {id, cover_id} = request.params.arguments as { id: string, cover_id: string };
+                return await handleReplaceTemplateCover(id, cover_id)
+            }
+
 
             default:
                 return {
