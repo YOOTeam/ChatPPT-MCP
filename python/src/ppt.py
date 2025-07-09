@@ -537,7 +537,7 @@ async def ppt_create_template_cover_image(
         ppt_style(str): Template-style,指定生成模板的颜色，可以为空，表示随机；也可以从"紫色","红色","橙色","黄色","绿色","青色","蓝色","粉色","灰色"进行指定，可选参数。
         ppt_num(int)：Template-num，指定生成模板数量，默认为4
     Returns:
-        新的PPT-ID
+        返回Cover-ID
     """
 
     try:
@@ -568,9 +568,9 @@ async def ppt_replace_user_select_template(
 ) -> str:
     """
     Name:
-        更改替换为用户指定模板。
+        通过Cover-ID替换/更换指定模板。
     Description:
-        根据任务PPT-ID执行替换为用户指定（根据cover_id）的模板，并返回新的任务PPT-ID，可以调用query_ppt工具查询生成进度和预览URL
+        根据工具Cover-ID和任务PPT-ID执行替换为用户指定（根据cover_id）的模板，并返回新的任务PPT-ID，可以调用query_ppt工具查询生成进度和预览URL
     Args:
         ppt_id(str): PPT-ID
         cover_id(str)：cover_id，用户指定的模板id，需要通过ppt_create_template_coverImage 进行生成。
