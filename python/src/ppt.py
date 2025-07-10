@@ -71,15 +71,54 @@ async def query_ppt(ppt_id: str = Field(description="PPT-ID")) -> str:
 # 主题生成PPT
 @mcp.tool()
 async def build_ppt(
-        text: str = Field(description="描述生成文本"),
+        theme: str = Field(description="描述生成主题"),
 ) -> str:
     """
     Name:
         PPT生成。当用户需要生成PPT时，调用此工具
     Description:
-        根据描述的文本或markdown，执行生成任务。当返回PPT-ID时，表示生成任务成功，可以调用query_ppt工具查询生成进度和预览URL
+        根据主题生成ppt。当返回PPT-ID时，表示生成任务成功，可以调用query_ppt工具查询生成进度和预览URL
     Args:
-        text: 输入描述的文本或markdown，生成PPT
+        theme: 输入描述的描述生成主题或markdown，生成PPT
+    Returns:
+        PPT-ID
+    """
+
+    try:
+        url = API_BASE + '/mcp/ppt/ppt-create'
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                url,
+                data={'text': theme},
+                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                timeout=30
+            )
+            response.raise_for_status()
+
+        if response.status_code != 200:
+            raise Exception(f"API请求失败: HTTP {response.status_code}")
+
+        return response.json()
+    except httpx.HTTPError as e:
+        raise Exception(f"HTTP请求失败: {str(e)}") from e
+    except ValueError as e:
+        raise Exception(str(e)) from e
+    except Exception as e:
+        raise Exception(f"PPT生成失败: {str(e)}") from e
+
+
+@mcp.tool()
+async def text_build_ppt(
+        text: str = Field(description="根据长文本（50字以上）"),
+) -> str:
+    """
+    Name:
+        根据长文本（50字以上）生成PPT。
+    Description:
+        根据长文本（50字以上）生成PPT。当返回PPT-ID时，表示生成任务成功，可以调用query_ppt工具查询生成进度和预览URL
+    Args:
+        text: 输入描述的文本（50字以上）或markdown，生成PPT
     Returns:
         PPT-ID
     """
