@@ -53,7 +53,7 @@ async def query_ppt(ppt_id: str = Field(description="PPT-ID")) -> str:
             response = await client.get(
                 url,
                 params={'id': ppt_id},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=30
             )
             response.raise_for_status()
@@ -91,7 +91,7 @@ async def build_ppt(
             response = await client.post(
                 url,
                 data={'text': theme},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=30
             )
             response.raise_for_status()
@@ -130,7 +130,7 @@ async def text_build_ppt(
             response = await client.post(
                 url,
                 data={'text': text},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=30
             )
             response.raise_for_status()
@@ -170,7 +170,7 @@ async def build_ppt_by_file(
             response = await client.post(
                 url,
                 data={'file_url': file_url},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=30
             )
             response.raise_for_status()
@@ -210,7 +210,7 @@ async def build_thesis_ppt(
             response = await client.post(
                 url,
                 data={'file_key': file_url},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=30
             )
             response.raise_for_status()
@@ -250,7 +250,7 @@ async def download_ppt(
             response = await client.get(
                 url,
                 params={'id': ppt_id},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=60
             )
             response.raise_for_status()
@@ -286,7 +286,7 @@ async def editor_ppt(
             response = await client.post(
                 url,
                 data={'id': ppt_id},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=60
             )
             response.raise_for_status()
@@ -320,7 +320,7 @@ async def ppt_replace_template(ppt_id: str = Field(description="PPT-ID")) -> str
             response = await client.post(
                 url,
                 data={'id': ppt_id},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=60
             )
             response.raise_for_status()
@@ -358,7 +358,7 @@ async def ppt_set_color(
             response = await client.post(
                 url,
                 data={'id': ppt_id, "color": color},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=60
             )
             response.raise_for_status()
@@ -396,7 +396,7 @@ async def ppt_set_font_name(
             response = await client.post(
                 url,
                 data={'id': ppt_id, "font_name": font_name},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=60
             )
             response.raise_for_status()
@@ -432,7 +432,7 @@ async def ppt_set_anim(ppt_id: str = Field(description="PPT-ID"),
             response = await client.post(
                 url,
                 data={'id': ppt_id, "transition": set_anim},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=60
             )
             response.raise_for_status()
@@ -466,7 +466,7 @@ async def ppt_create_note(ppt_id: str = Field(description="PPT-ID")) -> str:
             response = await client.post(
                 url,
                 data={'id': ppt_id, "note": "1"},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=60
             )
             response.raise_for_status()
@@ -504,7 +504,7 @@ async def ppt_add_slides(ppt_id: str = Field(description="PPT-ID"),
             response = await client.post(
                 url,
                 data={'id': ppt_id, 'slide_text': slide_text, 'slide_type': slide_type},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=60
             )
             response.raise_for_status()
@@ -539,7 +539,7 @@ async def ppt_create_outline_text(
             response = await client.post(
                 url,
                 data={'text': ppt_text},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=60
             )
             response.raise_for_status()
@@ -586,7 +586,7 @@ async def ppt_create_template_cover_image(
             response = await client.post(
                 url,
                 data={'title': ppt_text, "count": ppt_num, "color": ppt_color, "style": ppt_style},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=60
             )
             response.raise_for_status()
@@ -624,7 +624,7 @@ async def ppt_replace_user_select_template(
             response = await client.post(
                 url,
                 data={'id': ppt_id, "cover_id": cover_id},
-                headers={'Authorization': f"Bearer  {API_PPT_KEY}"},
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=60
             )
             response.raise_for_status()
