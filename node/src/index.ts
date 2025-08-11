@@ -271,6 +271,21 @@ const CREATE_TEMPLATE_COVER_TOOL: Tool = {
     }
 }
 
+const BUILD_PPT_BY_FILE: Tool = {
+    name: "build_ppt_by_file",
+    description: "根据用户上传的文件（给出文件url地址），执行生成PPT的任务。当返回PPT-ID时，表示生成任务成功，可以调用query_ppt工具查询生成进度和预览URL",
+    inputSchema: {
+        type: "object",
+        properties: {
+            file_url: {
+                type: "string",
+                description: "用户给定的文件url地址，可以支持包括MarkDown、word、PDF、XMind、FreeMind、TXT 等文档文件",
+            }
+        },
+        required: ["file_url"]
+    }
+}
+
 const REPLACE_TEMPLATE_COVER_TOOL: Tool = {
     name: "replace_template_cover_ppt",
     description: "根据任务PPT-ID执行替换为用户指定（根据cover_id）的模板，并返回新的任务PPT-ID。",
@@ -745,6 +760,42 @@ async function handleReplaceTemplateCover(ppt_id: string, cover_id: string) {
     };
 }
 
+// 通过文件url生成PPT
+async function handleBuildPptByFile(file_url: string) {
+    const url = new URL(API_URL + "/mcp/ppt/ppt-create-file");
+    let params = JSON.stringify({
+        "file_url": file_url
+    })
+    const response = await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": API_KEY
+        },
+        body: params,
+    });
+    const data = await response.json() as DatabaseResponse;
+    if (data.code !== 200) {
+        return {
+            content: [{
+                type: "text",
+                text: `BuildPpt failed: ${data.code} : ${data.msg}`,
+            }],
+            isError: true
+        };
+    }
+
+    return {
+        content: [{
+            type: "text",
+            text: JSON.stringify({
+                id: data.data,
+            }, null, 2)
+        }],
+        isError: false
+    };
+}
+
 
 // Create an MCP server
 const server = new Server(
@@ -771,7 +822,8 @@ const MAPS_TOOLS = [
     ADD_SLIDES_PPT_TOOL,
     CREATE_OUTLINE_PPT_TOOL,
     CREATE_TEMPLATE_COVER_TOOL,
-    REPLACE_TEMPLATE_COVER_TOOL
+    REPLACE_TEMPLATE_COVER_TOOL,
+    BUILD_PPT_BY_FILE
 ] as const;
 
 // Set up request handlers
@@ -836,7 +888,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 return await handleCreateOutLinePPT(ppt_text)
             }
 
-
             case "create_template_cover_ppt": {
                 const {ppt_text, ppt_num, ppt_style, ppt_color} = request.params.arguments as {
                     ppt_text: string,
@@ -847,12 +898,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 return await handleCreateTemplateCover(ppt_text, ppt_color, ppt_style, ppt_num)
             }
 
-
             case "replace_template_cover_ppt": {
                 const {id, cover_id} = request.params.arguments as { id: string, cover_id: string };
                 return await handleReplaceTemplateCover(id, cover_id)
             }
 
+            case "build_ppt_by_file": {
+                const {file_url} = request.params.arguments as { file_url: string };
+                return await handleBuildPptByFile(file_url)
+            }
 
             default:
                 return {
