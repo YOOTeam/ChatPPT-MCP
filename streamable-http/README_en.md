@@ -26,7 +26,7 @@ We recommend using the latest version of **Cursor client** (minimum v0.5):
             ],
         "disabled": false,
         "timeout": 60,
-        "url": "http://mcp.test.yoo-ai.com/mcp?key=YOO_PPT_KEY",
+        "url": "http://mcp.yoo-ai.com/mcp?key=YOO_PPT_KEY",
         "transportType": "streamable-http"
     }
 }
