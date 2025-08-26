@@ -319,7 +319,7 @@ async def ppt_replace_template(ppt_id: str = Field(description="PPT-ID")) -> str
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 url,
-                data={'id': ppt_id},
+                data={'id': ppt_id,"random_cover":True},
                 headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=60
             )

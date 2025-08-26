@@ -462,6 +462,7 @@ async function handleReplacePpt(id: string) {
     const url = new URL(API_URL + "/mcp/ppt/ppt-create-task");
     let params = JSON.stringify({
         "id": id,
+        "random_cover":true
     })
     const response = await fetch(url, {
         method: "POST",
