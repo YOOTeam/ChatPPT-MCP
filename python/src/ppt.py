@@ -72,7 +72,14 @@ async def query_ppt(ppt_id: str = Field(description="PPT-ID")) -> str:
 @mcp.tool()
 async def build_ppt(
         theme: str = Field(description="描述生成主题"),
-) -> str:
+        ppt_complex: int = Field(default=1, description="复杂度"),
+        font_name: str = Field(default="黑体", description="字体名称"),
+        language: str = Field(default="zh-CN", description="语言",
+                              enum=["zh-CN", "en-US", "zh-TW"]),
+        color: str = Field(default="紫色", description="颜色",
+                           enum=["紫色", "红色", "橙色", "黄色", "绿色", "青色", "蓝色", "粉色"]),
+        user_name: str = Field(default="", description="作者名称"),
+) -> dict:
     """
     Name:
         PPT生成。当用户需要生成PPT时，调用此工具
@@ -80,6 +87,11 @@ async def build_ppt(
         根据主题生成ppt。当返回PPT-ID时，表示生成任务成功，可以调用query_ppt工具查询生成进度和预览URL
     Args:
         theme: 输入描述的描述生成主题或markdown，生成PPT
+        ppt_complex: PPT复杂度 （1-简单，2-中等，3-复杂）
+        font_name: 字体名称（黑体、宋体、仿宋、幼圆、楷书、隶书）
+        language: 语言：zh-CN（简体中文）, en-US（英文），zh-TW（繁体中文）
+        color: PPT模板主题色（紫色/红色/橙色/黄色/绿色/青色/蓝色/粉色）
+        user_name: 作者名称，
     Returns:
         PPT-ID
     """
@@ -90,7 +102,14 @@ async def build_ppt(
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 url,
-                data={'text': theme},
+                data={
+                    'text': theme,
+                    'complex': ppt_complex,
+                    'font_name': font_name,
+                    'language': language,
+                    'color': color,
+                    'user_name': user_name
+                },
                 headers={'Authorization': f"Bearer {API_PPT_KEY}"},
                 timeout=30
             )
@@ -99,7 +118,8 @@ async def build_ppt(
         if response.status_code != 200:
             raise Exception(f"API请求失败: HTTP {response.status_code}")
 
-        return response.json()
+        res = response.json()
+        return {'code': res['code'], 'msg': res['msg'], 'data': {'ppt_id': res['data']['id']}}
     except httpx.HTTPError as e:
         raise Exception(f"HTTP请求失败: {str(e)}") from e
     except ValueError as e:
@@ -635,3 +655,64 @@ async def ppt_replace_user_select_template(
         return response.json()
     except httpx.HTTPError as e:
         raise Exception(f"HTTP request failed: {str(e)}") from e
+
+
+@mcp.tool()
+async def company_build_ppt(
+        text: str = Field(description="描述生成主题"),
+        ppt_complex: int = Field(default=1, description="复杂度"),
+        font_name: str = Field(default="", description="字体名称"),
+        language: str = Field(default="zh-CN", description="语言",
+                              enum=["zh-CN", "en-US", "zh-TW"]),
+        color: str = Field(default="紫色", description="颜色",
+                           enum=["紫色", "红色", "橙色", "黄色", "绿色", "青色", "蓝色", "粉色"]),
+        user_name: str = Field(default="", description="作者名称"),
+        company: str = Field(default="", description="公司名称"),
+        ai_picture: bool = Field(default=False, description="是否使用AI图片"),
+) -> dict:
+    """
+        Name:
+            PPT生成。当用户需要生成PPT时，调用此工具
+        Description:
+            根据主题生成ppt。当返回PPT-ID时，表示生成任务成功，可以调用query_ppt工具查询生成进度和预览URL
+        Args:
+            text: 输入描述的描述生成主题或markdown，生成PPT
+            ppt_complex: PPT复杂度 （1-简单，2-中等，3-复杂）
+            font_name: 字体名称（黑体、宋体、仿宋、幼圆、楷书、隶书）
+            language: 语言：zh-CN（简体中文）, en-US（英文），zh-TW（繁体中文）
+            color: PPT模板主题色（紫色/红色/橙色/黄色/绿色/青色/蓝色/粉色）
+            user_name: 作者名称，
+            company:公司名称
+            ai_picture:是否使用AI生成图片
+        Returns:
+            PPT-ID
+        """
+
+    try:
+        url = API_BASE + '/mcp/ppt/ppt-create'
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                url,
+                data={
+                    'text': text,
+                    'complex': ppt_complex,
+                    'font_name': font_name,
+                    'language': language,
+                    'color': color,
+                    'user_name': user_name,
+                    'company': company,
+                    'ai_picture': ai_picture
+                },
+                headers={'Authorization': f"Bearer {API_PPT_KEY}"},
+                timeout=30
+            )
+            response.raise_for_status()
+
+        if response.status_code != 200:
+            raise Exception(f"API请求失败: HTTP {response.status_code}")
+
+        res = response.json()
+        return {'code': res['code'], 'msg': res['msg'], 'data': {'ppt_id': res['data']['id']}}
+    except Exception as e:
+        raise Exception(f"PPT生成失败: {str(e)}") from e
